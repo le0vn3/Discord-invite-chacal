@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PVP SAB HUB</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Montserrat', sans-serif; background:#0a0a0a; color:#fff; overflow-x:hidden; position:relative; }
+
+canvas { position:fixed; top:0; left:0; width:100%; height:100%; z-index:0; pointer-events:none; }
+
+/* --- Header Glass --- */
+header {
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  height:90vh;
+  text-align:center;
+  padding:20px;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(15px);
+  border-radius: 20px;
+  margin:20px;
+  box-shadow:0 8px 40px rgba(0,0,0,0.6);
+  border:1px solid rgba(255,255,255,0.1);
+  z-index:1;
+  overflow:hidden;
+}
+
+/* --- Liquid wave derrière le header --- */
+#liquid {
+  position:absolute;
+  top:0; left:0;
+  width:100%; height:100%;
+  z-index:0;
+}
+
+/* --- Logo stylé --- */
+.logo-container {
+  background: rgba(0,0,0,0.7);
+  padding: 30px;
+  border-radius:50%;
+  box-shadow:0 0 60px #ff000080,0 0 100px #ff000040;
+  margin-bottom:25px;
+  width:220px;
+  height:220px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  animation: pulse 2s ease-in-out infinite;
+  z-index:1;
+}
+.logo-container img { max-width:100%; max-height:100%; border-radius:50%; }
+@keyframes pulse {
+  0%,100% { transform: scale(1); box-shadow:0 0 60px #ff000080,0 0 100px #ff000040; }
+  50% { transform: scale(1.05); box-shadow:0 0 80px #ff0000aa,0 0 120px #ff000066; }
+}
+
+/* --- Titres --- */
+header h1 {
+  font-size:60px;
+  color:#ff0000;
+  margin-bottom:20px;
+  text-shadow:0 0 15px #ff0000,0 0 30px #ff0000,0 0 50px #ff000055;
+  animation: glow 2s ease-in-out infinite;
+  z-index:1;
+  position:relative;
+}
+@keyframes glow {
+  0%,100% { text-shadow:0 0 15px #ff0000,0 0 30px #ff0000,0 0 50px #ff000055; }
+  50% { text-shadow:0 0 30px #ff0000,0 0 50px #ff0000,0 0 70px #ff000088; }
+}
+
+header p {
+  font-size:20px;
+  color:#ccc;
+  max-width:750px;
+  margin-bottom:35px;
+  z-index:1;
+  position:relative;
+}
+
+/* --- Discord Button --- */
+.discord-button {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  background: rgba(0,0,0,0.7);
+  color:#ff0000;
+  font-size:24px;
+  font-weight:700;
+  padding:18px 50px;
+  border-radius:50px;
+  cursor:pointer;
+  border:1px solid #ff0000;
+  box-shadow:0 0 20px #ff000080,0 0 40px #ff000040;
+  transition: all 0.3s ease;
+  text-shadow:0 0 5px #000;
+  z-index:1;
+  position:relative;
+}
+.discord-button img {
+  width:36px;
+  height:36px;
+  margin-right:12px;
+}
+.discord-button:hover {
+  transform: scale(1.1);
+  box-shadow:0 0 60px #ff0000aa,0 0 100px #ff000055,0 0 120px #ff000033;
+}
+
+/* --- Section Features --- */
+section.features {
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:20px;
+  padding:50px 20px;
+  z-index:1;
+  position:relative;
+}
+.feature-card {
+  background: rgba(0,0,0,0.6);
+  border-radius:25px;
+  padding:30px 25px;
+  width:320px;
+  text-align:center;
+  position:relative;
+  backdrop-filter: blur(10px);
+  border:1px solid rgba(255,0,0,0.3);
+  box-shadow:0 8px 30px rgba(0,0,0,0.7);
+  transition: transform 0.5s, box-shadow 0.5s;
+  overflow:hidden;
+}
+.feature-card::before {
+  content:'';
+  position:absolute;
+  top:-50%; left:-50%;
+  width:200%; height:200%;
+  background: linear-gradient(45deg, #ff000033, #ff000000, #ff000033, #ff000000);
+  background-size:400% 400%;
+  animation: shine 6s linear infinite;
+  opacity:0.3;
+}
+@keyframes shine {
+  0% {background-position:0 0;}
+  100% {background-position:400% 400%;}
+}
+.feature-card h3 { font-size:24px; margin-bottom:12px; color:#ff0000; text-shadow:0 0 5px #ff0000,0 0 15px #ff000055; }
+.feature-card p { font-size:15px; color:#ccc; }
+.feature-card:hover { transform: translateY(-8px) scale(1.05); box-shadow:0 0 60px #ff0000,0 0 80px #ff000050,0 0 100px #ff000020; }
+
+/* --- Footer --- */
+footer { text-align:center; padding:15px; font-size:14px; color:#aaa; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); border-top:1px solid rgba(255,255,255,0.1); }
+
+/* Fade-in */
+.fade-in { opacity:0; transform:translateY(20px); transition:opacity 0.8s ease, transform 0.8s ease; }
+.fade-in.visible { opacity:1; transform:translateY(0); }
+
+/* Responsive */
+@media screen and (max-width:768px){
+  .logo-container { width:180px; height:180px; padding:25px; }
+  header h1 { font-size:45px; }
+  header p { font-size:18px; }
+  .feature-card { width:95%; padding:25px 20px; }
+  .discord-button { font-size:22px; padding:15px 35px; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="particles"></canvas>
+<canvas id="liquid"></canvas>
+
+<header class="fade-in">
+  <div class="logo-container">
+    <img src="https://i.ibb.co/HDtT1p43/Ajouter-un-titre-20260113-224326-0000.png" alt="Logo serveur">
+  </div>
+  <h1>PVP SAB HUB</h1>
+  <p>Rejoins notre serveur pour PvP et Steal a Brainrot en toute sécurité grâce aux Middleman, sans risques de scams !</p>
+  <a href="https://discord.gg/FrZvf3Z4Py" target="_blank" class="discord-button">
+    <img src="https://i.ibb.co/HDtT1p43/Ajouter-un-titre-20260113-224326-0000.png" alt="Logo Discord">
+    Rejoindre maintenant
+  </a>
+</header>
+
+<section class="features fade-in">
+  <div class="feature-card">
+    <h3>PvP</h3>
+    <p>PvP d'autres joueurs et montre ton talent dans des combats rapides.</p>
+  </div>
+  <div class="feature-card">
+    <h3>serveur</h3>
+    <p>un staf a l'écoute avec de nombreux salon pour pourvoir Pvp avec d'autres joueurs.</p>
+  </div>
+  <div class="feature-card">
+    <h3>Middleman SAB</h3>
+    <p>PvP sécurisés via nos Middleman pour éviter tout scam sur Roblox.</p>
+  </div>
+</section>
+
+<footer>
+  &copy; 2026 PVP SAB HUB | Tous droits réservés
+</footer>
+
+<script>
+// --- Fade-in ---
+const faders = document.querySelectorAll('.fade-in');
+const observer = new IntersectionObserver((entries, obs) => {
+  entries.forEach(entry => {
+    if(entry.isIntersecting){
+      entry.target.classList.add('visible');
+      obs.unobserve(entry.target);
+    }
+  });
+},{ threshold: 0.1 });
+faders.forEach(fader => observer.observe(fader));
+
+// --- Particules rouges optimisées ---
+const canvas = document.getElementById('particles');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particleCount = window.innerWidth < 768 ? 30 : 70;
+let particlesArray = [];
+class Particle {
+  constructor() {
+    this.x = Math.random()*canvas.width;
+    this.y = Math.random()*canvas.height;
+    this.size = Math.random()*2+1;
+    this.speedX = (Math.random()*0.5-0.25);
+    this.speedY = (Math.random()*0.5-0.25);
+  }
+  update() {
+    this.x += this.speedX;
+    this.y += this.speedY;
+    if(this.x<0) this.x=canvas.width;
+    if(this.x>canvas.width) this.x=0;
+    if(this.y<0) this.y=canvas.height;
+    if(this.y>canvas.height) this.y=0;
+  }
+  draw() {
+    ctx.fillStyle='red';
+    ctx.beginPath();
+    ctx.arc(this.x,this.y,this.size,0,Math.PI*2);
+    ctx.fill();
+  }
+}
+function initParticles() {
+  particlesArray = [];
+  for(let i=0;i<particleCount;i++){
+    particlesArray.push(new Particle());
+  }
+}
+function animateParticles() {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  particlesArray.forEach(p=>{p.update();p.draw();});
+  requestAnimationFrame(animateParticles);
+}
+window.addEventListener('resize',()=>{
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  particleCount = window.innerWidth < 768 ? 30 : 70;
+  initParticles();
+});
+initParticles();
+animateParticles();
+
+// --- Liquid wave rouge derrière header ---
+const liquidCanvas = document.getElementById('liquid');
+const lctx = liquidCanvas.getContext('2d');
+liquidCanvas.width = window.innerWidth;
+liquidCanvas.height = window.innerHeight;
+let t=0;
+
+function animateLiquid(){
+  lctx.clearRect(0,0,liquidCanvas.width,liquidCanvas.height);
+  lctx.fillStyle = 'rgba(255,0,0,0.05)';
+  lctx.beginPath();
+  for(let x=0;x<liquidCanvas.width;x+=2){
+    let y = 50*Math.sin((x*0.01)+t)+50*Math.cos((x*0.015)+t)+liquidCanvas.height/2;
+    lctx.lineTo(x,y);
+  }
+  lctx.lineTo(liquidCanvas.width,liquidCanvas.height);
+  lctx.lineTo(0,liquidCanvas.height);
+  lctx.closePath();
+  lctx.fill();
+  t+=0.03;
+  requestAnimationFrame(animateLiquid);
+}
+window.addEventListener('resize',()=>{
+  liquidCanvas.width = window.innerWidth;
+  liquidCanvas.height = window.innerHeight;
+});
+animateLiquid();
+</script>
+
+</body>
+  </html>
